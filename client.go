@@ -65,8 +65,14 @@ func fmtNS(ns string) string {
 }
 
 func (c *Client) Connect() error {
-	dialer := engineio.Dialer{
-		Transports: []transport.Transport{websocket.Default, polling.Default},
+	dialer := engineio.Dialer{}
+
+	if len(c.opts.Transports) > 0 {
+		dialer.Transports = c.opts.Transports
+	} else {
+		dialer.Transports = []transport.Transport{
+			websocket.Default, polling.Default,
+		}
 	}
 
 	enginioCon, err := dialer.Dial(c.url, nil)
